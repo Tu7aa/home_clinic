@@ -25,6 +25,7 @@ Widget defaultTextFormField(
         {control,
         hint,
         suffixIcon,
+          onChanged,
         prefixIcon,
         textInputType,
         valdiate,
@@ -35,6 +36,7 @@ Widget defaultTextFormField(
         validator: valdiate,
         autofocus: false,
         controller: control,
+        onChanged: onChanged,
         keyboardType: textInputType,
         decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0),
@@ -74,6 +76,7 @@ defaultAppBar({leadingIcon,leadingFunction, actionIcon, actionFunction, bottom ,
       padding: const EdgeInsets.only(
         top: 10,
         left: 10,
+        bottom: 4
       ),
       child: Container(
           height: 40,

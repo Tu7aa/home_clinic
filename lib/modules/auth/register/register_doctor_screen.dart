@@ -5,10 +5,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:homeclinic/modules/auth/cubit/cubit.dart';
 import 'package:homeclinic/modules/auth/cubit/states.dart';
+import 'package:homeclinic/modules/auth/register/otp_doctor_screen.dart';
 import 'package:homeclinic/modules/auth/register/otp_screen.dart';
 import 'package:homeclinic/shared/components.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterDoctorScreen extends StatelessWidget {
   var emailController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
@@ -19,9 +20,9 @@ class RegisterScreen extends StatelessWidget {
         listener: (context, state){
           if(state is AuthEmailValidSuccess){
             defaultNavigateTo(
-              screen: OtpScreen(
-              ),
-              context: context
+                screen: OtpDoctorScreen(
+                ),
+                context: context
             );
           }
         },

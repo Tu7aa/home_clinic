@@ -7,7 +7,7 @@ class DioHelper{
   static initail(){
     dio = Dio(
       BaseOptions(
-        baseUrl: 'https://homeeclinic.herokuapp.com/api/',
+          baseUrl: 'https://clinichome.herokuapp.com/api/',
           receiveDataWhenStatusError: true,
           headers: {
             'Accept':'application/json',
@@ -15,23 +15,22 @@ class DioHelper{
       )
     );
   }
-  static Future<Response> getData({@required url, @required Map<String, dynamic>? query})async{
-
+  static Future<Response> getData({@required url, @required Map<String, dynamic>? query, token})async{
       dio!.options.headers = {
         'Accept':'application/json',
-        'Authorization': 'Token 7a556c3e80f3818e6ab5803dab6796a0ebc104a8',
+        'Authorization': 'Token $token',
       };
 
     return await dio!.get(url, queryParameters: query);
   }
 
-  static Future<Response> postData({@required url,@required Map<String, dynamic>? query, token})async{
-    if(token != null){
+  static Future<Response> postData({@required url,@required Map<String, dynamic>? query, token, @required Map<String, dynamic>? data})async{
       dio!.options.headers = {
         'Accept':'application/json',
+        'Content-Type': 'application/json',
         'Authorization': 'Token $token',
       };
-    }
-    return await dio!.post(url, queryParameters: query);
+
+    return await dio!.post(url, queryParameters: query, data: data??null);
   }
 }

@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:homeclinic/modules/cubit_doctor/states.dart';
+import 'package:homeclinic/modules/cubit_patient/cubit.dart';
+import 'package:homeclinic/modules/cubit_patient/states.dart';
 import 'package:homeclinic/modules/view/doctor_view_screen/doctor_view_screen.dart';
 import 'package:homeclinic/modules/view/main_screen/news_screen/news_screen.dart';
 import 'package:homeclinic/modules/view/main_screen/notification_screen/notification_screen.dart';
@@ -60,167 +64,179 @@ class _HomeScreenState extends State<HomeScreen> {
     var date = DateTime.now();
     var day = DateFormat('EEEE, d MMM').format(date);
     print(day);
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        actions: [
-          defaultAppBarIcons(icon: Icons.notifications_none_sharp,
-            function: (){
-              defaultNavigateTo(context: context, screen: NotificationScreen());
-            }
-          ),
-        ],
-        elevation: 0.0,
-        title: Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: CircleAvatar(
-            radius: 24,
-            backgroundImage: AssetImage('assets/image/amr.jpeg'),
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              defaultText(color: '#b0b3c7', size: 16.0, text: day, bold: true),
-              SizedBox(
-                height: 5,
+    return BlocConsumer<HomeClinicPatientCubit, HomeClinicPatientStates>(
+        listener: (context, index){},
+      builder: (context, index){
+          var homeclinic = HomeClinicPatientCubit.get(context);
+          return Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              backgroundColor: Colors.white,
+              actions: [
+                Padding(
+                  padding: EdgeInsets.only(bottom: 6),
+                  child: defaultAppBarIcons(icon: Icons.notifications_none_sharp,
+                      function: (){
+                        defaultNavigateTo(context: context, screen: NotificationScreen());
+                      }
+                  ),
+                ),
+              ],
+              toolbarHeight: 60,
+              elevation: 0.0,
+              centerTitle: false,
+              title: Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: CircleAvatar(
+                  radius: 24,
+                  backgroundImage: AssetImage('assets/image/amr.jpeg'),
+                ),
               ),
-              defaultText(
-                  color: '#262c3d',
-                  size: 24.0,
-                  text: 'Hi, Amr Nasser',
-                  bold: true),
-              SizedBox(
-                height: 40,
-              ),
-              Row(
-                children: [
-                  defaultText(
-                      color: '#262c3d',
-                      size: 18.0,
-                      text: 'Don’t forget',
-                      bold: true),
-                  Spacer(),
-                  defaultText(
-                      color: '#ff6f5b', size: 14.0, text: 'clear', bold: false),
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25.0),
-                    border: Border.all(
-                      color: HexColor('#b0b3c7'),
-                    )),
-                child: Row(
+            ),
+
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Image.asset(
-                      'assets/image/history.png',
-                      width: 20,
-                      height: 20,
-                    ),
+                    defaultText(color: '#b0b3c7', size: 16.0, text: day, bold: true),
                     SizedBox(
-                      width: 5,
+                      height: 5,
                     ),
                     defaultText(
                         color: '#262c3d',
-                        size: 16.0,
-                        text: 'Meet Dr. Maher Mohamed',
+                        size: 24.0,
+                        text: (homeclinic.patientName != null) ?'Hi, ${homeclinic.patientName}':'....',
                         bold: true),
                     SizedBox(
-                      width: 15,
+                      height: 40,
+                    ),
+                    Row(
+                      children: [
+                        defaultText(
+                            color: '#262c3d',
+                            size: 18.0,
+                            text: 'Don’t forget',
+                            bold: true),
+                        Spacer(),
+                        defaultText(
+                            color: '#ff6f5b', size: 14.0, text: 'clear', bold: false),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(25.0),
+                          border: Border.all(
+                            color: HexColor('#b0b3c7'),
+                          )),
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            'assets/image/history.png',
+                            width: 20,
+                            height: 20,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          defaultText(
+                              color: '#262c3d',
+                              size: 16.0,
+                              text: 'Meet Dr. Maher Mohamed',
+                              bold: true),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          defaultText(
+                              color: '#2ad3e7',
+                              size: 12.0,
+                              text: '14:30 PM',
+                              bold: true),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
                     ),
                     defaultText(
-                        color: '#2ad3e7',
-                        size: 12.0,
-                        text: '14:30 PM',
+                        color: '#262c3d',
+                        size: 18.0,
+                        text: 'What are you looking for?',
                         bold: true),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      children: [
+                        defaultLookingContainer(
+                            text: 'General\nCheck-up',
+                            function: (){
+                              defaultNavigateTo(context: context, screen: AddressScreen());
+                            },
+                            src: 'assets/image/general.png'),
+                        defaultLookingContainer(
+                            text: 'Chat with\nDoctor', src: 'assets/image/chat.png'),
+                        defaultLookingContainer(
+                            text: 'Health\nNews',
+                            function: (){
+                              defaultNavigateTo(context: context, screen: NewsScreen());
+                            },
+                            src: 'assets/image/healthyNews.png'),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      children: [
+                        defaultText(
+                            color: '#262c3d',
+                            size: 18.0,
+                            text: 'Top Rate Doctors',
+                            bold: true),
+                        Spacer(),
+                        InkWell(
+                          onTap: (){
+                            defaultNavigateTo(context: context, screen: DoctorViewScreen());
+                          },
+                          child: defaultText(
+                              color: '#ff6f5b',
+                              size: 12.0,
+                              text: 'All Doctors',
+                              bold: true),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Container(
+                      height: 300,
+                      child: ListView.separated(
+                          physics: BouncingScrollPhysics(),
+                          reverse: false,
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index)=> defaultDoctorContainer(
+                              doc: doctor[index]
+                          ),
+                          separatorBuilder: (context, index)=> SizedBox(width: 15),
+                          itemCount: doctor.length
+                      ),
+                    ),
+                    SizedBox(height: 20,),
                   ],
                 ),
               ),
-              SizedBox(
-                height: 20,
-              ),
-              defaultText(
-                  color: '#262c3d',
-                  size: 18.0,
-                  text: 'What are you looking for?',
-                  bold: true),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: [
-                  defaultLookingContainer(
-                      text: 'General\nCheck-up',
-                      function: (){
-                        defaultNavigateTo(context: context, screen: AddressScreen());
-                      },
-                      src: 'assets/image/general.png'),
-                  defaultLookingContainer(
-                      text: 'Chat with\nDoctor', src: 'assets/image/chat.png'),
-                  defaultLookingContainer(
-                      text: 'Health\nNews',
-                      function: (){
-                        defaultNavigateTo(context: context, screen: NewsScreen());
-                      },
-                      src: 'assets/image/healthyNews.png'),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: [
-                  defaultText(
-                      color: '#262c3d',
-                      size: 18.0,
-                      text: 'Top Rate Doctors',
-                      bold: true),
-                  Spacer(),
-                  InkWell(
-                    onTap: (){
-                      defaultNavigateTo(context: context, screen: DoctorViewScreen());
-                    },
-                    child: defaultText(
-                        color: '#ff6f5b',
-                        size: 12.0,
-                        text: 'All Doctors',
-                        bold: true),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Container(
-                height: 300,
-                child: ListView.separated(
-                  physics: BouncingScrollPhysics(),
-                  reverse: false,
-                  shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index)=> defaultDoctorContainer(
-                      doc: doctor[index]
-                    ),
-                    separatorBuilder: (context, index)=> SizedBox(width: 15),
-                    itemCount: doctor.length
-                ),
-              ),
-              SizedBox(height: 20,),
-            ],
-          ),
-        ),
-      ),
+            ),
+          );
+      },
     );
   }
 }

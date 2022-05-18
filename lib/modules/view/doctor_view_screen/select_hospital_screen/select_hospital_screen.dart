@@ -1,116 +1,124 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:homeclinic/modules/cubit_doctor/cubit.dart';
+import 'package:homeclinic/modules/cubit_doctor/states.dart';
 import 'package:homeclinic/modules/view/doctor_view_screen/pick_time_screen/pick_time_screen.dart';
 import 'package:homeclinic/shared/components.dart';
 
 class SelectHospitalScreen extends StatefulWidget {
+  var id;
   String? doctorName;
-  SelectHospitalScreen({this.doctorName});
+  var doctorPrice;
+  var doctorImage;
+  SelectHospitalScreen({this.doctorName, this.id, this.doctorPrice, this.doctorImage});
   @override
   State<SelectHospitalScreen> createState() => _SelectHospitalScreenState();
 }
 
 class _SelectHospitalScreenState extends State<SelectHospitalScreen> {
   String? selectArea;
-  List hospital = [
-    {'name': 'Al Saudi Elalmany'},
-    {'name': 'Al Saudi Elalmany'},
-    {'name': 'Al Saudi Elalmany'},
-    {'name': 'Al Saudi Elalmany'},
-    {'name': 'Al Saudi Elalmany'},
-    {'name': 'Al Saudi Elalmany'},
-    {'name': 'Al Saudi Elalmany'},
-  ];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        centerTitle: true,
-        title: Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Text(
-            'Select Hospital',
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold),
-          ),
-        ),
-        leading: Padding(
-          padding: const EdgeInsets.only(
-            top: 10,
-            left: 10,
-          ),
-          child: Container(
-              height: 40,
-              width: 45,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  color: HexColor('#d3efff'),
-                  borderRadius: BorderRadius.circular(15.0)),
-              child: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back_ios_sharp,
-                    size: 16,
-                    color: HexColor('#23b2ff'),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  })),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Container(
-              color: Colors.white,
-              child: DropdownButton<String>(
-                iconEnabledColor: HexColor('#ff6f5b'),
-                underline: Divider(
-                  color: Colors.white,
-                ),
-                isExpanded: false,
-                value: selectArea,
-                hint: Text('Area'),
-                items:
-                    <String>['Cairo', 'Giza', 'Alexandria'].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectArea = value;
-                  });
-                },
+    return BlocProvider(create: (context)=> HomeClinicDoctorCubit()..viewDoctorClinic(id: widget.id),
+    child: BlocConsumer<HomeClinicDoctorCubit, HomeClinicDoctorStates>(
+      listener: (context, state){},
+      builder: (context,state){
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            centerTitle: true,
+            title: Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Text(
+                'Select Hospital',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold),
               ),
             ),
+            leading: Padding(
+              padding: const EdgeInsets.only(
+                top: 10,
+                left: 10,
+              ),
+              child: Container(
+                  height: 40,
+                  width: 45,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      color: HexColor('#d3efff'),
+                      borderRadius: BorderRadius.circular(15.0)),
+                  child: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_ios_sharp,
+                        size: 16,
+                        color: HexColor('#23b2ff'),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      })),
+            ),
+            actions: [
+              // Padding(
+              //   padding: const EdgeInsets.only(top: 10),
+              //   child: Container(
+              //     color: Colors.white,
+              //     child: DropdownButton<String>(
+              //       iconEnabledColor: HexColor('#ff6f5b'),
+              //       underline: Divider(
+              //         color: Colors.white,
+              //       ),
+              //       isExpanded: false,
+              //       value: selectArea,
+              //       hint: Text('Area'),
+              //       items:
+              //       <String>['Cairo', 'Giza', 'Alexandria'].map((String value) {
+              //         return DropdownMenuItem<String>(
+              //           value: value,
+              //           child: Text(value),
+              //         );
+              //       }).toList(),
+              //       onChanged: (value) {
+              //         setState(() {
+              //           selectArea = value;
+              //         });
+              //       },
+              //     ),
+              //   ),
+              // ),
+            ],
+            elevation: 0.0,
           ),
-        ],
-        elevation: 0.0,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-          child: ListView.separated(
-              shrinkWrap: true,
-              reverse: false,
-              physics: BouncingScrollPhysics(),
-              itemBuilder: (context, index) =>
-                  defaultcontainer(hospital[index], context, widget.doctorName),
-              separatorBuilder: (context, index) => SizedBox(height: 10),
-              itemCount: hospital.length),
-        ),
-      ),
+          body: SingleChildScrollView(
+            child: (state is ViewDoctorsLoading) ?Center(
+              child: CircularProgressIndicator(),
+            )
+            :Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+              child: ListView.separated(
+                  shrinkWrap: true,
+                  reverse: false,
+                  physics: BouncingScrollPhysics(),
+                  itemBuilder: (context, index) =>
+                      defaultcontainer(HomeClinicDoctorCubit.get(context).clinic[index], context, widget.doctorName, widget.id, widget.doctorImage, widget.doctorPrice),
+                  separatorBuilder: (context, index) => SizedBox(height: 10),
+                  itemCount: HomeClinicDoctorCubit.get(context).clinic.length),
+            ),
+          ),
+        );
+      },
+    ),
     );
   }
 }
 
-Widget defaultcontainer(hospital,context, doctorName) => InkWell(
+Widget defaultcontainer(hospital,context, doctorName, id, doctorImage, doctorPrice) => InkWell(
   onTap: (){
-    defaultNavigateTo(context: context, screen: PickTimeScreen(hospitalName: hospital['name'], doctorName: doctorName,));
+    defaultNavigateTo(context: context, screen: PickTimeScreen(hospitalName: hospital['clinicname'], doctorName: doctorName,
+      clinicAddress: hospital['address'],clinicCity:hospital['city'],clinicWorkTime: hospital['workhours'], clinicImage: hospital['clinic_image'],doctorId: id, doctorImage: doctorImage, doctorPrice:doctorPrice ,));
   },
       child: Container(
         alignment: Alignment.topLeft,
@@ -135,10 +143,10 @@ Widget defaultcontainer(hospital,context, doctorName) => InkWell(
                 ]),
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(25.0),
-                    child: Image.asset(
-                      'assets/image/Hospital.jpg',
-                      height: 90,
-                      width: 90,
+                    child: Image.network(
+                      'http://res.cloudinary.com/clinichome/${hospital['clinic_image']}',
+                      height: 100,
+                      width: 100,
                       fit: BoxFit.cover,
                     ))),
             SizedBox(
@@ -149,7 +157,7 @@ Widget defaultcontainer(hospital,context, doctorName) => InkWell(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '${hospital['name']}',
+                    '${hospital['clinicname']}',
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -159,7 +167,27 @@ Widget defaultcontainer(hospital,context, doctorName) => InkWell(
                     height: 5,
                   ),
                   Text(
-                    'El-Montaza, Heliopolis',
+                    '${hospital['city']}',
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: HexColor('#b0b3c7')),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    '${hospital['address']}',
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: HexColor('#b0b3c7')),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    '${hospital['workhours']}',
                     style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -180,26 +208,7 @@ Widget defaultcontainer(hospital,context, doctorName) => InkWell(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
                               color: HexColor('#747f9e'))),
-                      Spacer(),
-                      Container(
-                        alignment: Alignment.center,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                        color: HexColor('#d4faff'),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.location_on,
-                              color: HexColor('#2ad3e7'),
-                            ),
-                            Text('1 km',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    color: HexColor('#2ad3e7'))),
-                          ],
-                        ),
-                      )
+
                     ],
                   ),
                 ],

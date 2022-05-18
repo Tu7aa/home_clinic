@@ -15,6 +15,10 @@ class MainScreen extends StatelessWidget {
           builder: (context, state){
             var mainCubit = MainScreenCubit.get(context);
             return Scaffold(
+              appBar: AppBar(
+                toolbarHeight: 0.0,
+                elevation: 0.0,
+              ),
               body: mainCubit.widget[mainCubit.currentIndex],
               bottomNavigationBar: CurvedNavigationBar(
                   backgroundColor: HexColor('#23b2ff'),

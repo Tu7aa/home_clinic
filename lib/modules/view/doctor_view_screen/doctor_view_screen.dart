@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:homeclinic/modules/cubit/cubit.dart';
-import 'package:homeclinic/modules/cubit/states.dart';
+import 'package:homeclinic/modules/cubit_doctor/cubit.dart';
+import 'package:homeclinic/modules/cubit_doctor/states.dart';
 import 'package:homeclinic/modules/view/doctor_view_screen/doctor_information_screen/doctor_information_screen.dart';
 import 'package:homeclinic/shared/components.dart';
 
@@ -21,159 +21,138 @@ class _DoctorViewScreenState extends State<DoctorViewScreen>
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<HomeClinicCubit, HomeClinicStates>(
-        listener: (context, state){},
+    return BlocProvider(create: (context)=> HomeClinicDoctorCubit()..viewDoctors(spec: 'neurologists'),
+    child: BlocConsumer<HomeClinicDoctorCubit, HomeClinicDoctorStates>(
+      listener: (context, state){},
       builder: (context, state){
-          var homeClinic = HomeClinicCubit.get(context);
-          return DefaultTabController(
-            length: 8,
-            initialIndex: tabController.index,
-            child: Scaffold(
-                backgroundColor: HexColor('#f9f9f9'),
-                appBar: defaultAppBar(
-                    bottom: TabBar(
-                      isScrollable: true,
-                      onTap: (void index) {
-                        if(tabController.index == 0)homeClinic.viewDoctorNeurologists(spec:'neurologists');
-                        setState(() {});
-                      },
-                      controller: tabController,
-                      tabs: <Widget>[
-                        Tab(
-                            child: Text(
-                              'Neurologists',
-                              style: TextStyle(
-                                  color: (tabController.index == 0)
-                                      ? HexColor('#23b2ff')
-                                      : HexColor('#b0b3c7')),
-                            )),
-                        Tab(
-                          child: Text(
-                            'Dentist',
-                            style: TextStyle(
-                                color: (tabController.index == 1)
-                                    ? HexColor('#23b2ff')
-                                    : HexColor('#b0b3c7')),
-                          ),
-                        ),
-                        Tab(
-                          child: Text(
-                            'InternalMedicine',
-                            style: TextStyle(
-                                color: (tabController.index == 2)
-                                    ? HexColor('#23b2ff')
-                                    : HexColor('#b0b3c7')),
-                          ),
-                        ),
-                        Tab(
-                          child: Text(
-                            'Ophthalmologists',
-                            style: TextStyle(
-                                color: (tabController.index == 3)
-                                    ? HexColor('#23b2ff')
-                                    : HexColor('#b0b3c7')),
-                          ),
-                        ),
-                        Tab(
-                          child: Text(
-                            'Pediatricians',
-                            style: TextStyle(
-                                color: (tabController.index == 4)
-                                    ? HexColor('#23b2ff')
-                                    : HexColor('#b0b3c7')),
-                          ),
-                        ),
-                        Tab(
-                          child: Text(
-                            'Otolaryngologists',
-                            style: TextStyle(
-                                color: (tabController.index == 5)
-                                    ? HexColor('#23b2ff')
-                                    : HexColor('#b0b3c7')),
-                          ),
-                        ),
-                        Tab(
-                          child: Text(
-                            'Dermatologists',
-                            style: TextStyle(
-                                color: (tabController.index == 6)
-                                    ? HexColor('#23b2ff')
-                                    : HexColor('#b0b3c7')),
-                          ),
-                        ),
-                        Tab(
-                          child: Text(
-                            'Gynecologists',
-                            style: TextStyle(
-                                color: (tabController.index == 7)
-                                    ? HexColor('#23b2ff')
-                                    : HexColor('#b0b3c7')),
-                          ),
-                        ),
-                      ],
-                    ),
-                    action: true,
-                    leading: true,
-                    leadingIcon: Icons.arrow_back_ios_sharp,
-                    title: 'Doctor List',
-                    leadingFunction: () {
-                      Navigator.pop(context);
+        var homeClinic = HomeClinicDoctorCubit.get(context);
+        return DefaultTabController(
+          length: 8,
+          initialIndex: tabController.index,
+          child: Scaffold(
+              backgroundColor: HexColor('#f9f9f9'),
+              appBar: defaultAppBar(
+                  bottom: TabBar(
+                    isScrollable: true,
+                    onTap: (void index) {
+                      if(tabController.index == 0)homeClinic.viewDoctors(spec:'neurologists');
+                      if(tabController.index == 1)homeClinic.viewDoctors(spec:'dentist');
+                      if(tabController.index == 2)homeClinic.viewDoctors(spec:'internal medicine');
+                      if(tabController.index == 3)homeClinic.viewDoctors(spec:'ophthalmologists');
+                      if(tabController.index == 4)homeClinic.viewDoctors(spec:'pediatricians');
+                      if(tabController.index == 5)homeClinic.viewDoctors(spec:'otolaryngologists');
+                      if(tabController.index == 6)homeClinic.viewDoctors(spec:'dermatologists');
+                      if(tabController.index == 7)homeClinic.viewDoctors(spec:'gynecologists');
+                      setState(() {});
                     },
-                    actionIcon: Icons.search),
-                body: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                    child: ListView.separated(
-                        shrinkWrap: true,
-                        reverse: false,
-                        physics: BouncingScrollPhysics(),
-                        itemBuilder: (context, index) =>
-                            defaultcontainer((tabController.index == 0)
-                                ? homeClinic.doctorNeurologists[index]
-                                : (tabController.index == 1)
-                                ? homeClinic.doctorDentist[index]
-                                : (tabController.index == 2)
-                                ? homeClinic.doctorInternalMedicine[index]
-                                : (tabController.index == 3)
-                                ? homeClinic.doctorOphthalmologists[index]
-                                : (tabController.index == 4)
-                                ? homeClinic.doctorPediatricians[index]
-                                : (tabController.index == 5)
-                                ? homeClinic.doctorOtolaryngologists[index]
-                                : (tabController.index == 6)
-                                ? homeClinic.doctorDermatologists[index]
-                                : (tabController.index == 7)
-                                ? homeClinic.doctorGynecologists[index]
-                                : homeClinic.doctorNeurologists[index], context),
-                        separatorBuilder: (context, index) => SizedBox(height: 10),
-                        itemCount: (tabController.index == 0)
-                            ? homeClinic.doctorNeurologists.length
-                            : (tabController.index == 1)
-                            ? homeClinic.doctorDentist.length
-                            : (tabController.index == 2)
-                            ?  homeClinic.doctorInternalMedicine.length
-                            : (tabController.index == 4)
-                            ? homeClinic.doctorOphthalmologists.length
-                            : (tabController.index == 4)
-                            ? homeClinic.doctorPediatricians.length
-                            : (tabController.index == 5)
-                            ? homeClinic.doctorOtolaryngologists.length
-                            : (tabController.index == 6)
-                            ? homeClinic.doctorDermatologists.length
-                            : (tabController.index == 7)
-                            ? homeClinic.doctorGynecologists.length
-                            : homeClinic.doctorNeurologists.length),
+                    controller: tabController,
+                    tabs: <Widget>[
+                      Tab(
+                          child: Text(
+                            'Neurologists',
+                            style: TextStyle(
+                                color: (tabController.index == 0)
+                                    ? HexColor('#23b2ff')
+                                    : HexColor('#b0b3c7')),
+                          )),
+                      Tab(
+                        child: Text(
+                          'Dentist',
+                          style: TextStyle(
+                              color: (tabController.index == 1)
+                                  ? HexColor('#23b2ff')
+                                  : HexColor('#b0b3c7')),
+                        ),
+                      ),
+                      Tab(
+                        child: Text(
+                          'InternalMedicine',
+                          style: TextStyle(
+                              color: (tabController.index == 2)
+                                  ? HexColor('#23b2ff')
+                                  : HexColor('#b0b3c7')),
+                        ),
+                      ),
+                      Tab(
+                        child: Text(
+                          'Ophthalmologists',
+                          style: TextStyle(
+                              color: (tabController.index == 3)
+                                  ? HexColor('#23b2ff')
+                                  : HexColor('#b0b3c7')),
+                        ),
+                      ),
+                      Tab(
+                        child: Text(
+                          'Pediatricians',
+                          style: TextStyle(
+                              color: (tabController.index == 4)
+                                  ? HexColor('#23b2ff')
+                                  : HexColor('#b0b3c7')),
+                        ),
+                      ),
+                      Tab(
+                        child: Text(
+                          'Otolaryngologists',
+                          style: TextStyle(
+                              color: (tabController.index == 5)
+                                  ? HexColor('#23b2ff')
+                                  : HexColor('#b0b3c7')),
+                        ),
+                      ),
+                      Tab(
+                        child: Text(
+                          'Dermatologists',
+                          style: TextStyle(
+                              color: (tabController.index == 6)
+                                  ? HexColor('#23b2ff')
+                                  : HexColor('#b0b3c7')),
+                        ),
+                      ),
+                      Tab(
+                        child: Text(
+                          'Gynecologists',
+                          style: TextStyle(
+                              color: (tabController.index == 7)
+                                  ? HexColor('#23b2ff')
+                                  : HexColor('#b0b3c7')),
+                        ),
+                      ),
+                    ],
                   ),
-                )),
-          );
+                  action: true,
+                  leading: true,
+                  leadingIcon: Icons.arrow_back_ios_sharp,
+                  title: 'Doctor List',
+                  leadingFunction: () {
+                    Navigator.pop(context);
+                  },
+                  actionIcon: Icons.search),
+              body: (state is ViewDoctorsLoading) ? Center(child: CircularProgressIndicator(),) :
+              SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                  child: ListView.separated(
+                      shrinkWrap: true,
+                      reverse: false,
+                      physics: BouncingScrollPhysics(),
+                      itemBuilder: (context, index) =>
+                          defaultcontainer(homeClinic.doctors[index],context),
+                      separatorBuilder: (context, index) => SizedBox(height: 10),
+                      itemCount: homeClinic.doctors.length),
+                ),
+              )
+          ),
+        );
       },
+    ),
     );
   }
 }
 
 Widget defaultcontainer(doc, context) => InkWell(
   onTap: (){
-    defaultNavigateTo(context: context, screen: DoctorInformationScreen(doctorName: 'Dr.${doc['name']}',));
+    defaultNavigateTo(context: context, screen: DoctorInformationScreen(doctorName: 'Dr.${doc['username']}', doctorId: '${doc['user']}',doctorImage: '${doc['image']}',));
   },
       child: Container(
         alignment: Alignment.topLeft,
@@ -198,12 +177,18 @@ Widget defaultcontainer(doc, context) => InkWell(
                 ]),
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(10.0),
-                    child: Image.asset(
+                    child: (doc['image'] != 'User has No Profile Pic') ?Image.network(
                       '${doc['image']}',
                       height: 90,
                       width: 90,
                       fit: BoxFit.cover,
-                    ))),
+                    ) :
+                    CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 45,
+                    )
+                )
+            ),
             SizedBox(
               width: 10,
             ),
@@ -243,26 +228,6 @@ Widget defaultcontainer(doc, context) => InkWell(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
                               color: HexColor('#747f9e'))),
-                      Spacer(),
-                      Container(
-                        alignment: Alignment.center,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                        color: HexColor('#d4faff'),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.location_on,
-                              color: HexColor('#2ad3e7'),
-                            ),
-                            Text('1 km',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    color: HexColor('#2ad3e7'))),
-                          ],
-                        ),
-                      )
                     ],
                   ),
                 ],
